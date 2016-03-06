@@ -1,6 +1,6 @@
 # Newton DES Crypto
 
-Newton variant of DES encrpytion algorithm for NodeJS. [As it has been found](http://newtontalk.newtontalk.narkive.com/U6dNGqJw/newton-dock-password), Newton OS has it's own implementation of DES encryption, so any try to implement Dock password exchange using standard DES will fail.
+Apple Newton variant of DES encrpytion algorithm for NodeJS. [As it has been found](http://newtontalk.newtontalk.narkive.com/U6dNGqJw/newton-dock-password), Newton OS has it's own implementation of DES encryption, so any try to implement Dock password exchange using standard DES will fail.
 
 This module uses a C++ implementation from Paul Guyot ( [Kallisys](http://www.kallisys.com) )  with small modifications in order to compile a node native addon.
 

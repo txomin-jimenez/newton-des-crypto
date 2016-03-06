@@ -1,6 +1,6 @@
 {
   "name": "newton-des-crypto",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Newton OS Variant for DES encryption",
   "main": "main.js",
   "scripts": {

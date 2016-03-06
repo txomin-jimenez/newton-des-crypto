@@ -4,7 +4,6 @@ Apple Newton variant of DES encrpytion algorithm for NodeJS. [As it has been fou
 
 This module uses a C++ implementation from Paul Guyot ( [Kallisys](http://www.kallisys.com) )  with small modifications in order to compile a node native addon.
 
-
 ## Installation
 
 ```

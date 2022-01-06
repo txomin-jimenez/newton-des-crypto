@@ -1,8 +1,8 @@
 {
   "targets": [
     {
-      "target_name": "uDesCrypto",
-      "sources": [ 
+      "target_name": "NetwonDES",
+      "sources": [
         "src/KDefinitions.cc",
         "src/main.cc",
         "src/TInt64.cc",
@@ -17,13 +17,8 @@
       "include_dirs": [
         "<!(node -e \"require('nan')\")"
       ],
-      "cflags": ["-std=c++11", "-DTARGET_OS_OPENSTEP=1"],
+      "cflags": ["-std=c++11", "-DTARGET_OS_LINUX=1"],
       "conditions": [
-        [ 'OS!="win"', {
-          "cflags+": [ "-std=c++11" , "-DTARGET_OS_OPENSTEP=1"],
-          "cflags_c+": [ "-std=c++11" , "-DTARGET_OS_OPENSTEP=1"],
-          "cflags_cc+": [ "-std=c++11" , "-DTARGET_OS_OPENSTEP=1"],
-        }],
         [ 'OS=="mac"', {
           "xcode_settings": {
             "OTHER_CPLUSPLUSFLAGS" : [ "-std=c++11", "-stdlib=libc++" , "-DTARGET_OS_OPENSTEP=1"],

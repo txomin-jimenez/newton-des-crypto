@@ -13,25 +13,25 @@ $ npm install --save newton-des-crypto
 ## Usage
 
 ```js
-NewtonDesCrypto = require('newton-des-crypto');
+NetwonDES = require('newton-des-crypto');
 pwd = "apassword";
-dataEncrypted = NewtonDesCrypto.encryptBlock(pwd, '00783C8C002BB602'); 
-decryptedData = NewtonDesCrypto.decryptBlock(pwd, dataEncrypted);
+dataEncrypted = NetwonDES.encrypt(pwd, '00783C8C002BB602');
+decryptedData = NetwonDES.decrypt(pwd, dataEncrypted);
 ```
 
 ## Tests
 
 Unit test available via:
 ```
-$ grunt test
+$ npm test
 ```
 
 ## License
 
 Portions of C++ code for Int64 manipulation, UniCode Strings, and DES Encryption created by original author are Copyright (C) 2001-2004, Paul Guyot. All Rights Reserved.
 
-Main C++ module class and NodeJs module are 
-Copyright (c) 2016, Txomin Jimenez
+Main C++ module class and NodeJs module are
+Copyright (c) 2022, Txomin Jimenez
 
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 

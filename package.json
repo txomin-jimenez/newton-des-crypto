@@ -1,25 +1,33 @@
 {
   "name": "newton-des-crypto",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Newton OS Variant for DES encryption",
   "main": "main.js",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
   "scripts": {
     "start": "node main.js",
     "configure": "node-gyp configure",
     "build": "node-gyp build",
-    "rebuild": "node-gyp rebuild"
+    "rebuild": "node-gyp rebuild",
+    "test": "mocha --reporter spec",
+    "lint": "eslint --fix ./**/*.js"
   },
   "gypfile": true,
   "dependencies": {
-    "bindings": "~1.2.1",
-    "nan": "^2.2.0"
+    "bindings": "^1.5.0",
+    "nan": "^2.15.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "grunt": "^0.4.5",
-    "grunt-contrib-jshint": "^1.0.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-node-gyp": "^3.0.0",
-    "grunt-simple-mocha": "^0.4.1"
+    "chai": "^4.3.4",
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-mocha": "^10.0.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.2.0",
+    "mocha": "^9.1.3"
   }
 }

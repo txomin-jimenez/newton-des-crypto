@@ -4,115 +4,114 @@
 #include "UUTF16CStr.h"
 
 // -------------------------------------------------------------------- //
-// Encrypt a Newton key pair with received password. 
+// Encrypt a Newton key pair with received password.
 // Parameters:
 //      (string) password: the password to encrypt
-//      (string) data: Newton key pair in HEX string format. ex: 
+//      (string) keys: Newton key pair in HEX string format. ex:
 //            '00783C8C002BB602'
 // -------------------------------------------------------------------- //
-void EncryptBlock(const Nan::FunctionCallbackInfo<v8::Value>& args) {
-    
-    // get input password
-    v8::String::Utf8Value cmd(args[0]);
-    std::string s = std::string(*cmd); 
-    const char *thePassword = s.c_str();
-   
-    // generate UDES key for encryption 
-    KUInt16 theUTF16Password[16];
-    KUInt64 theKey;
-    UUTF16CStr::FromASCII( (const KUInt8*) thePassword, theUTF16Password, 16 );
-    UDES::CreateNewtonKey( theUTF16Password, &theKey );
+void Encrypt(const Nan::FunctionCallbackInfo<v8::Value> &args) {
+  v8::Isolate* isolate = args.GetIsolate();
 
-    // process input key pair received as HEX String
-    KUInt64 theBlock;
-    v8::String::Utf8Value cmd2(args[1]);
-    std::string s2 = std::string(*cmd2); 
-    unsigned int key1 = std::stoul (s2.substr(0,8),nullptr,16);
-    unsigned int key2 = std::stoul (s2.substr(8,8),nullptr,16);
-    
-    //(void) ::printf("input key1 -> %s\n", s2.substr(0,8).c_str());
-    //(void) ::printf("input key2 -> %s\n", s2.substr(8,8).c_str());
-    //(void) ::printf("input key -> %.8X%.8X\n", key1, key2);
-    
-    //UTInt64::Set( &theBlock, 0x000f1f6b, 0xff82ddcb );
-    //UTInt64::Set( &theBlock, 0x06622230, 0x05804779 );
-    //UTInt64::Set( &theBlock, 0xFF8A5C97, 0x006DD480 );
-    //UTInt64::Set( &theBlock, 0xFFEDA1DA, 0x004464B6 );
-    //UTInt64::Set( &theBlock, 0x00783C8C, 0x002BB602 );
-    UTInt64::Set( &theBlock, key1, key2);
-    
-    UDES::NewtonEncodeBlock( theKey, &theBlock );
-    
-    //(void) ::printf(
-          //"encrypted key -> %.8X%.8X\n",
-          //(unsigned int) UTInt64::GetHi(theBlock),
-          //(unsigned int) UTInt64::GetLo(theBlock) );
-    
-    char encryptedKeys[16];
-    std::sprintf(encryptedKeys, "%.8X%.8X",
-          (unsigned int) UTInt64::GetHi(theBlock),
-          (unsigned int) UTInt64::GetLo(theBlock) );
+  // get input password
+  v8::String::Utf8Value passwordArg(isolate, args[0]);
+  const char *password = std::string(*passwordArg).c_str();
 
-    std::string returnValue(encryptedKeys);
-    //args.GetReturnValue().Set(Nan::New("world").ToLocalChecked());
-    args.GetReturnValue().Set(Nan::New(returnValue).ToLocalChecked());
-    
+  // generate UDES key for encryption
+  KUInt16 passwordUTF16[16];
+  KUInt64 encryptionKey;
+  UUTF16CStr::FromASCII((const KUInt8*) password, passwordUTF16, 16);
+  UDES::CreateNewtonKey(passwordUTF16, &encryptionKey);
+
+  // process input key pair received as HEX String
+  KUInt64 keysBlock;
+  v8::String::Utf8Value keysArg(isolate, args[1]);
+  std::string keysStr = std::string(*keysArg);
+  unsigned int key1 = std::stoul (keysStr.substr(0,8),nullptr,16);
+  unsigned int key2 = std::stoul (keysStr.substr(8,8),nullptr,16);
+  UTInt64::Set(&keysBlock, key1, key2);
+
+  // (void) ::printf("input key1 -> %s\n", s2.substr(0,8).c_str());
+  // (void) ::printf("input key2 -> %s\n", s2.substr(8,8).c_str());
+  // (void) ::printf("input key -> %.8X%.8X\n", key1, key2);
+
+  UDES::NewtonEncodeBlock(encryptionKey, &keysBlock);
+
+  // (void) ::printf(
+  //       "encrypted key -> '%.8X%.8X'\n",
+  //       (unsigned int) UTInt64::GetHi(theBlock),
+  //       (unsigned int) UTInt64::GetLo(theBlock) );
+
+  char encryptedKeysChar[17];
+  std::sprintf(encryptedKeysChar, "%.8X%.8X",
+        (unsigned int) UTInt64::GetHi(keysBlock),
+        (unsigned int) UTInt64::GetLo(keysBlock) );
+
+  std::string encryptedKeys(encryptedKeysChar);
+  args.GetReturnValue().Set(Nan::New(encryptedKeys).ToLocalChecked());
 }
 
 // -------------------------------------------------------------------- //
-// Decrypt a key pair with received password. 
+// Decrypt a key pair with received password.
 // Parameters:
 //      (string) password: the password used to encrypt
-//      (string) data: Newton key pair in HEX string format. ex: 
+//      (string) keys: Newton key pair in HEX string format. ex:
 //            '00783C8C002BB602'
 // -------------------------------------------------------------------- //
-void DecryptBlock(const Nan::FunctionCallbackInfo<v8::Value>& args) {
-    
-    // get input password
-    v8::String::Utf8Value cmd(args[0]);
-    std::string s = std::string(*cmd); 
-    const char *thePassword = s.c_str();
-   
-    // generate UDES key for decryption 
-    KUInt16 theUTF16Password[16];
-    KUInt64 theKey;
-    UUTF16CStr::FromASCII( (const KUInt8*) thePassword, theUTF16Password, 16 );
-    UDES::CreateNewtonKey( theUTF16Password, &theKey );
+void Decrypt(const Nan::FunctionCallbackInfo<v8::Value>& args) {
+  v8::Isolate* isolate = args.GetIsolate();
 
-    // process input key pair received as HEX String
-    KUInt64 theBlock;
-    v8::String::Utf8Value cmd2(args[1]);
-    std::string s2 = std::string(*cmd2); 
-    unsigned int key1 = std::stoul (s2.substr(0,8),nullptr,16);
-    unsigned int key2 = std::stoul (s2.substr(8,8),nullptr,16);
-    
-    //(void) ::printf("input key -> %.8X%.8X\n", key1, key2);
-    
-    UTInt64::Set( &theBlock, key1, key2);
-    
-    UDES::NewtonDecodeBlock( theKey, &theBlock );
-    
-    //(void) ::printf(
-          //"decrypted key -> %.8X%.8X\n",
-          //(unsigned int) UTInt64::GetHi(theBlock),
-          //(unsigned int) UTInt64::GetLo(theBlock) );
-    
-    char decryptedKeys[16];
-    std::sprintf(decryptedKeys, "%.8X%.8X",
-          (unsigned int) UTInt64::GetHi(theBlock),
-          (unsigned int) UTInt64::GetLo(theBlock) );
+  // get input password
+  v8::String::Utf8Value passwordArg(isolate, args[0]);
+  const char *password = std::string(*passwordArg).c_str();
 
-    std::string returnValue(decryptedKeys);
-    args.GetReturnValue().Set(Nan::New(returnValue).ToLocalChecked());
-    
+  // generate UDES key for decryption
+  KUInt16 passwordUTF16[16];
+  KUInt64 decryptionKey;
+  UUTF16CStr::FromASCII((const KUInt8*) password, passwordUTF16, 16);
+  UDES::CreateNewtonKey(passwordUTF16, &decryptionKey);
+
+  // process input key pair received as HEX String
+  KUInt64 keysBlock;
+  v8::String::Utf8Value keysArg(isolate, args[1]);
+  std::string keysStr = std::string(*keysArg);
+  unsigned int key1 = std::stoul (keysStr.substr(0,8),nullptr,16);
+  unsigned int key2 = std::stoul (keysStr.substr(8,8),nullptr,16);
+
+  UTInt64::Set(&keysBlock, key1, key2);
+  //(void) ::printf("input key -> %.8X%.8X\n", key1, key2);
+
+  UDES::NewtonDecodeBlock(decryptionKey, &keysBlock);
+
+  //(void) ::printf(
+        //"decrypted key -> %.8X%.8X\n",
+        //(unsigned int) UTInt64::GetHi(theBlock),
+        //(unsigned int) UTInt64::GetLo(theBlock) );
+
+  char decryptedKeysChar[17];
+  std::sprintf(decryptedKeysChar, "%.8X%.8X",
+        (unsigned int) UTInt64::GetHi(keysBlock),
+        (unsigned int) UTInt64::GetLo(keysBlock) );
+
+  std::string decryptedKeys(decryptedKeysChar);
+  args.GetReturnValue().Set(Nan::New(decryptedKeys).ToLocalChecked());
 }
 
 // -------------------------------------------------------------------- //
 //   Init Node Module export functions
 // -------------------------------------------------------------------- //
 void Init(v8::Local<v8::Object> exports) {
-    exports->Set(Nan::New("encryptBlock").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(EncryptBlock)->GetFunction());
-    exports->Set(Nan::New("decryptBlock").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(DecryptBlock)->GetFunction());
+  v8::Local<v8::Context> context = exports->CreationContext();
+  exports->Set(context,
+               Nan::New("encrypt").ToLocalChecked(),
+               Nan::New<v8::FunctionTemplate>(Encrypt)
+                   ->GetFunction(context)
+                   .ToLocalChecked());
+  exports->Set(context,
+               Nan::New("decrypt").ToLocalChecked(),
+               Nan::New<v8::FunctionTemplate>(Decrypt)
+                   ->GetFunction(context)
+                   .ToLocalChecked());
 }
 
-NODE_MODULE(uDesCrypto, Init)
+NODE_MODULE(NetwonDES, Init)

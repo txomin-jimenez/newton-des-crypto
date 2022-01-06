@@ -1,26 +1,23 @@
-var uDesCryptoNative = require('./build/Release/uDesCrypto.node');
-var uDesCrypto;
+var NetwonDES = require('./build/Release/NetwonDES.node');
 
 module.exports = {
-    // Encrypt a Newton key pair with received password. 
+    // Encrypt a Newton key pair with received password.
     // Parameters:
     //      (string) password: the password to encrypt
-    //      (string) data: Newton key pair in HEX string format. ex: 
+    //      (string) keys: Newton key pair in HEX string format. ex:
     //            '00783C8C002BB602'
-    encryptBlock: function(password, data) {
+    encrypt: function(password, keys) {
       password || (password = '');
-      return uDesCryptoNative.encryptBlock(password, data);
+      return NetwonDES.encrypt(password, keys);
     },
 
-    // Decrypt a key pair with received password. 
+    // Decrypt a key pair with received password.
     // Parameters:
     //      (string) password: the password used to encrypt
-    //      (string) data: Newton key pair in HEX string format. ex: 
+    //      (string) keys: Newton key pair in HEX string format. ex:
     //            '00783C8C002BB602'
-    decryptBlock: function(password, data) {
+    decrypt: function(password, keys) {
       password || (password = '');
-      return uDesCryptoNative.decryptBlock(password, data);
-    
+      return NetwonDES.decrypt(password, keys);
     }
-
 };
